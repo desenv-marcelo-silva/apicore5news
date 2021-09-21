@@ -10,14 +10,15 @@ content-type: application/json
     "price": 14.15
 }
 
-##
+###
+
 GET {{host}}/items/09e74490-ae54-4267-aab8-bafd787e1f1c
 
 ###
 
 GET {{host}}/items
 
-##
+###
 
 PUT {{host}}/items/1e748225-0311-485b-a4ec-16939a83a973
 content-type: application/json
@@ -27,7 +28,10 @@ content-type: application/json
   "price": 7.95
 }
 
-
-##
+###
 
 DELETE {{host}}/items/1e748225-0311-485b-a4ec-16939a83a973
+
+###
+
+GET {{host}}/health
