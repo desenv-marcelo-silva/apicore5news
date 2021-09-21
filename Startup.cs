@@ -14,6 +14,10 @@ using Catalog.Repositories;
 using Catalog.Settings;
 using System;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Text.Json;
+using System.Linq;
+using System.Net.Mime;
+using Microsoft.AspNetCore.Http;
 
 namespace Catalog
 {
@@ -78,7 +82,25 @@ namespace Catalog
                 endpoints.MapControllers();
 
                 endpoints.MapHealthChecks("/health/ready", 
-                    new HealthCheckOptions { Predicate = (check) => check.Tags.Contains("ready") });
+                    new HealthCheckOptions { Predicate = (check) => check.Tags.Contains("ready"),
+                    ResponseWriter = async(context, report) => 
+                    {
+                        var result = JsonSerializer.Serialize(
+                            new {
+                                status = report.Status.ToString(),
+                                checks = report.Entries.Select(entry => new {
+                                    name = entry.Key,
+                                    status = entry.Value.Status.ToString(),
+                                    exception = entry.Value.Exception != null ? entry.Value.Exception.Message : "none",
+                                    duration = entry.Value.Duration.ToString()
+                                })
+                            }
+                        );
+
+                        context.Response.ContentType = MediaTypeNames.Application.Json;
+                        await context.Response.WriteAsync(result);
+                    }
+                     });
 
                 endpoints.MapHealthChecks("/health/live", 
                     new HealthCheckOptions { Predicate = (_) => false });
