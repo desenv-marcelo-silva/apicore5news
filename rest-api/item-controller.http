@@ -34,4 +34,8 @@ DELETE {{host}}/items/1e748225-0311-485b-a4ec-16939a83a973
 
 ###
 
-GET {{host}}/health
+GET {{host}}/health/live
+
+###
+
+GET {{host}}/health/ready
